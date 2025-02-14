@@ -24,19 +24,12 @@ jobs:
 
           ssh -o StrictHostKeyChecking=no -i private_key.pem $USER@$HOST << 'EOF'
             cd ${{ secrets.PROJECT_DIR }}
-
-            # To pull the latest changes from the repo
-            git pull origin main
-
-            # Activate virtual environment
-            source venv/bin/activate
-
-            # Install dependencies
-            pip install -r requirements.txt
-
-            # Restart the FastAPI app
+            
+            git pull origin main || exit 1
+            source venv/bin/activate || exit 1
+            pip install -r requirements.txt || exit 1
             sudo systemctl restart fastapi
 
             # Restart the Nginx server
-              sudo systemctl restart nginx
+            sudo systemctl restart nginx
           EOF
